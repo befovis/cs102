@@ -19,7 +19,6 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
             shift = 0
         num_ord = ord(plaintext[i])
         if plaintext[i].isalpha() and (65 <= num_ord <= 90 or 97 <= num_ord <= 122):
-            # translate large letters into small ones
             if plaintext[i].isupper():
                 plaintext[i].lower()
                 num_ord += 32
@@ -55,12 +54,10 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
             shift = 0
         num_ord = ord(ciphertext[i])
         if ciphertext[i].isalpha() and (65 <= num_ord <= 90 or 97 <= num_ord <= 122):
-            # translate large letters into small ones
             if ciphertext[i].isupper():
                 ciphertext[i].lower()
                 num_ord += 32
             num_ord -= shift
-            # ord 'a' 97 - lower limit
             while num_ord < 97:
                 num_ord = 122 - (96 - num_ord)
             num_ind += 1
