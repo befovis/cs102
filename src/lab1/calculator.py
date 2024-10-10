@@ -75,7 +75,7 @@ if __name__ == "__main__":
                     continue
                 print("{0} = {1}".format(inp_user, result))
         elif expression.lower() == "e" or expression.lower() == "exit" or expression == "":
-            print("Have a good time of day!")
+            print("Good bye!")
             break
         else:
             error_output()
