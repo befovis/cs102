@@ -23,7 +23,6 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
                 plaintext[i].lower()
                 num_ord += 32
             num_ord += shift
-            # ord 'z' 122 - higher limit
             while num_ord > 122:
                 num_ord = 96 + (num_ord - 122)
             num_ind += 1
