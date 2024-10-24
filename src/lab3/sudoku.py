@@ -54,7 +54,6 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    # Output of the element row
     return grid[pos[0]]
 
 
@@ -67,7 +66,6 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    # Output of the element col
     return [row[pos[1]] for row in grid]
 
 
@@ -81,7 +79,6 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    # Output of the element block
     block_start = [pos[0] - pos[0]%3, pos[1] - pos[1]%3]
     block = [grid[i][j] for i in range(block_start[0], block_start[0] + 3) for j in range(block_start[1], block_start[1] + 3)]
     return block
@@ -96,7 +93,6 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    # Search for the first empty position
     for i in range(len(grid)):
         if "." in grid[i]:
             return (i, grid[i].index('.'))
@@ -112,7 +108,6 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    # Search for all possible values in a given position
     values = set()
     for nums in '123456789':
         if nums not in get_row(grid, pos) and nums not in get_col(grid, pos) and nums not in get_block(grid, pos):
@@ -121,32 +116,39 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
+    """ Решение пазла, заданного в grid """
+    """ Как решать Судоку?
+        1. Найти свободную позицию
+        2. Найти все возможные значения, которые могут находиться на этой позиции
+        3. Для каждого возможного значения:
+            3.1. Поместить это значение на эту позицию
+            3.2. Продолжить решать оставшуюся часть пазла
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> solve(grid)
+    [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
+    """
     empty_position = find_empty_positions(grid)
     if empty_position is None:
         return grid
     possible_values = find_possible_values(grid, empty_position)
-    # search through all possible options
     for value in possible_values:
         old_value = grid[empty_position[0]][empty_position[1]]
         grid[empty_position[0]][empty_position[1]] = value
         temp = solve(grid)
         if temp is not None:
             return temp
-        # roll back the program if the position value is unsuitable
         grid[empty_position[0]][empty_position[1]] = old_value
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
     for i in range(9):
-        # checking if there are identical values in the rows and cols, also checking there are empty values
         if "." in solution[i]:
             return False
         row = get_row(solution, (i, 0))
         col = get_row(solution, (0, i))
         if len(row) != len(set(row)) or len(col) != len(set(col)):
             return False
-    # checking if there are identical values in the blocks
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
             block = get_block(solution, (i, j))
@@ -184,17 +186,14 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
         numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         random.shuffle(numbers)
 
-        # randomly arrange the numbers diagonally blocks
         for j in range(3):
             for k in range(3):
                 grid[i + j][i + k] = str(numbers.pop())
 
-    # completely fill the sudoku with numbers
     solution = solve(grid)
     if not solution:
         return generate_sudoku(N)
 
-    # remove the value from sudoku until the number of filled cells is equal to N
     counter = 81
     while counter != N:
         row = random.randint(0, 8)
