@@ -1,4 +1,4 @@
-import pathlib, random, multiprocessing, time
+import pathlib, random, multiprocessing
 import typing as tp
 
 T = tp.TypeVar("T")
@@ -10,6 +10,7 @@ def read_sudoku(path: tp.Union[str, pathlib.Path]) -> tp.List[tp.List[str]]:
     with path.open() as f:
         puzzle = f.read()
     return create_grid(puzzle)
+
 
 def run_solve(filename):
     grid = read_sudoku(filename)
