@@ -11,6 +11,15 @@ def read_sudoku(path: tp.Union[str, pathlib.Path]) -> tp.List[tp.List[str]]:
         puzzle = f.read()
     return create_grid(puzzle)
 
+def run_solve(filename):
+    grid = read_sudoku(filename)
+    display(grid)
+    solution = solve(grid)
+    if not solution:
+        print(f"Puzzle {filename} can't be solved")
+    else:
+        display(solution)
+
 
 def create_grid(puzzle: str) -> tp.List[tp.List[str]]:
     digits = [c for c in puzzle if c in "123456789."]
@@ -202,14 +211,9 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
             solution[row][col] = "."
             counter -= 1
     return solution
+    
 
-
-if __name__ == "__main__":
+if name == "__main__":
     for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
-        grid = read_sudoku(filename)
-        display(grid)
-        solution = solve(grid)
-        if not solution:
-            print(f"Puzzle {filename} can't be solved")
-        else:
-            display(solution)
+        p = multiprocessing.Process(target=run_solve, args=(filename,))
+        p.start()
