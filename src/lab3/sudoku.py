@@ -214,7 +214,7 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     return solution
     
 
-if name == "__main__":
+if __name__ == "__main__":
     for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
         p = multiprocessing.Process(target=run_solve, args=(filename,))
         p.start()
